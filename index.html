@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇪🇨 La Tienda de Destino Argentina EC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .producto-card { transition: all 0.3s ease; }
+        .producto-card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-yellow-50 via-blue-50 to-red-50 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-yellow-400 via-blue-500 to-red-500 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold">🇪🇨 La Tienda de Destino Argentina EC</h1>
+                    <p class="text-sm opacity-90">Productos auténticos de Ecuador</p>
+                </div>
+                <button onclick="toggleCarrito()" class="relative bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all shadow-md">
+                    🛒 Carrito
+                    <span id="badge-carrito" class="hidden absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-6">
+        <!-- Búsqueda -->
+        <div class="mb-6 space-y-4">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="busqueda" 
+                    placeholder="🔍 Buscar productos..." 
+                    oninput="filtrarProductos()"
+                    class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                />
+            </div>
+
+            <!-- Categorías -->
+            <div id="categorias" class="flex gap-2 overflow-x-auto pb-2"></div>
+        </div>
+
+        <!-- Contador -->
+        <div id="contador" class="mb-4 text-gray-600 font-medium"></div>
+
+        <!-- Grid de productos -->
+        <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+    </div>
+
+    <!-- Modal del Carrito -->
+    <div id="modal-carrito" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-4">
+        <div class="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">🛒 Mi Carrito</h2>
+                <button onclick="toggleCarrito()" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all">
+                    ✕
+                </button>
+            </div>
+
+            <div id="carrito-contenido" class="flex-1 overflow-y-auto p-6"></div>
+
+            <div id="carrito-footer" class="hidden border-t bg-gray-50 p-6 space-y-4">
+                <div class="flex justify-between items-center text-lg">
+                    <span class="font-semibold">Subtotal (<span id="total-items">0</span> items):</span>
+                    <span id="total-precio" class="text-2xl font-bold text-green-600">$0.00</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="vaciarCarrito()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                        Vaciar Carrito
+                    </button>
+                    <button onclick="enviarWhatsApp()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-md flex items-center justify-center gap-2">
+                        📱 Enviar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const productos = [
+            {id:1,nombre:'Manicho 28g',categoria:'Chocolates',precio:2.00,imagen:'https://images.unsplash.com/photo-1606312619070-d48b4cda6257?w=400&h=400&fit=crop'},
+            {id:2,nombre:'Chocolate Noggy (frasco)',categoria:'Chocolates',precio:10.00,imagen:'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=400&fit=crop'},
+            {id:3,nombre:'Chocolate Galak 20g',categoria:'Chocolates',precio:2.00,imagen:'https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&h=400&fit=crop'},
+            {id:4,nombre:'Tango chocolate negro',categoria:'Galletas',precio:1.50,imagen:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&h=400&fit=crop'},
+            {id:5,nombre:'Hanuta',categoria:'Galletas',precio:2.00,imagen:'https://images.unsplash.com/photo-1568471173238-a7e0e2e66b58?w=400&h=400&fit=crop'},
+            {id:6,nombre:'Galletas de Coco 30g',categoria:'Galletas',precio:1.50,imagen:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400&h=400&fit=crop'},
+            {id:7,nombre:'Galletas Amor chocolate 100g',categoria:'Galletas',precio:4.50,imagen:'https://images.unsplash.com/photo-1548365328-8c6db3220e4c?w=400&h=400&fit=crop'},
+            {id:8,nombre:'Paleta limón 7 (unidad)',categoria:'Golosinas',precio:1.50,imagen:'https://images.unsplash.com/photo-1582221675623-fd2d000f5645?w=400&h=400&fit=crop'},
+            {id:9,nombre:'Paletas ácidos con sal (unidad)',categoria:'Golosinas',precio:0.30,imagen:'https://images.unsplash.com/photo-1581798459219-c0f6f8b8b8a7?w=400&h=400&fit=crop'},
+            {id:10,nombre:'Chicles súper hiper ácidos (5 unidades)',categoria:'Golosinas',precio:0.80,imagen:'https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400&h=400&fit=crop'},
+            {id:11,nombre:'Quipitos pops 8g',categoria:'Golosinas',precio:1.50,imagen:'https://images.unsplash.com/photo-1514517521153-1be72277b32f?w=400&h=400&fit=crop'},
+            {id:12,nombre:'Pipas limón 20g',categoria:'Golosinas',precio:1.80,imagen:'https://images.unsplash.com/photo-1608797178974-15b35a64ede9?w=400&h=400&fit=crop'},
+            {id:13,nombre:'Cheese Tris 23g',categoria:'Snacks',precio:2.00,imagen:'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400&h=400&fit=crop'},
+            {id:14,nombre:'Banchis natural 40g',categoria:'Snacks',precio:3.00,imagen:'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop'},
+            {id:15,nombre:'Banchis limón 40g',categoria:'Snacks',precio:3.00,imagen:'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop'},
+            {id:16,nombre:'Banchis picante 40g',categoria:'Snacks',precio:3.50,imagen:'https://images.unsplash.com/photo-1613919113640-0ae4b37b3a6c?w=400&h=400&fit=crop'},
+            {id:17,nombre:'Tortolines picantes 45gr',categoria:'Snacks',precio:3.00,imagen:'https://images.unsplash.com/photo-1625772452888-7e8c0279d346?w=400&h=400&fit=crop'},
+            {id:18,nombre:'Tortolines madurito',categoria:'Snacks',precio:3.00,imagen:'https://images.unsplash.com/photo-1587224621482-2a5f866ea1f4?w=400&h=400&fit=crop'},
+            {id:19,nombre:'Platanitos natural 45g',categoria:'Snacks',precio:2.00,imagen:'https://images.unsplash.com/photo-1610432026777-a3d2a9505b4b?w=400&h=400&fit=crop'},
+            {id:20,nombre:'Banchis picante 150g',categoria:'Snacks',precio:4.00,imagen:'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400&h=400&fit=crop'},
+            {id:21,nombre:'Cheese trees 47g',categoria:'Snacks',precio:3.00,imagen:'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop'},
+            {id:22,nombre:'Habas natural 32g',categoria:'Snacks',precio:1.50,imagen:'https://images.unsplash.com/photo-1599909533230-b1ca9c0ebc87?w=400&h=400&fit=crop'},
+            {id:23,nombre:'Panchitos 18g',categoria:'Snacks',precio:1.50,imagen:'https://images.unsplash.com/photo-1608797178974-15b35a64ede9?w=400&h=400&fit=crop'},
+            {id:24,nombre:'Golpe ranchero 25g',categoria:'Snacks',precio:1.00,imagen:'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop'},
+            {id:25,nombre:'Café Minerva 200g',categoria:'Bebidas',precio:6.00,imagen:'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop'},
+            {id:26,nombre:'Té caliente legz 500gr',categoria:'Bebidas',precio:5.00,imagen:'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop'},
+            {id:27,nombre:'Jugos Yá sabor mora (sobre)',categoria:'Bebidas',precio:0.90,imagen:'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400&h=400&fit=crop'},
+            {id:28,nombre:'Fioravanti Manzana 300ml',categoria:'Bebidas',precio:5.00,imagen:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400&h=400&fit=crop'},
+            {id:29,nombre:'Fioravanti Fresa 250ml',categoria:'Bebidas',precio:5.00,imagen:'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=400&fit=crop'},
+            {id:30,nombre:'Chocolisto',categoria:'Bebidas',precio:0.70,imagen:'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=400&h=400&fit=crop'},
+            {id:31,nombre:'Pony malta 200ml',categoria:'Bebidas',precio:5.00,imagen:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop'},
+            {id:32,nombre:'Avena quaker sabor maracuyá 300g',categoria:'Bebidas',precio:6.00,imagen:'https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=400&h=400&fit=crop'},
+            {id:33,nombre:'Café Minerva 100g',categoria:'Bebidas',precio:4.50,imagen:'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=400&h=400&fit=crop'},
+            {id:34,nombre:'Juan valdez 100gr',categoria:'Bebidas',precio:2.00,imagen:'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=400&fit=crop'},
+            {id:35,nombre:'Café Vélez Loja',categoria:'Bebidas',precio:25.00,imagen:'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&h=400&fit=crop'},
+            {id:36,nombre:'Panelada de Maracuyá',categoria:'Bebidas',precio:1.50,imagen:'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400&h=400&fit=crop'},
+            {id:37,nombre:'Leche en polvo la vaquita 190g',categoria:'Lácteos',precio:5.00,imagen:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop'},
+            {id:38,nombre:'Tapiokita sabor mora 200g',categoria:'Lácteos',precio:5.00,imagen:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop'},
+            {id:39,nombre:'Yogurt Toni mora 190gr',categoria:'Lácteos',precio:2.50,imagen:'https://images.unsplash.com/photo-1571212515218-8e6796a6f0a0?w=400&h=400&fit=crop'},
+            {id:40,nombre:'Tapiokita sabor fresa 200gr',categoria:'Lácteos',precio:5.00,imagen:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop'},
+            {id:41,nombre:'Leche en polvo la vaquita 90g',categoria:'Lácteos',precio:3.00,imagen:'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=400&h=400&fit=crop'},
+            {id:42,nombre:'Tapiokita sabor cereza 200g',categoria:'Lácteos',precio:5.00,imagen:'https://images.unsplash.com/photo-1587049352846-4a222e784420?w=400&h=400&fit=crop'},
+            {id:43,nombre:'Leche en polvo la vaquita 400g',categoria:'Lácteos',precio:13.50,imagen:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop'},
+            {id:44,nombre:'Mermelada de mora gustadina 250g',categoria:'Mermeladas',precio:5.00,imagen:'https://images.unsplash.com/photo-1599785209796-786432b228bc?w=400&h=400&fit=crop'},
+            {id:45,nombre:'Mermelada de piña gustadina 250g',categoria:'Mermeladas',precio:5.00,imagen:'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&h=400&fit=crop'},
+            {id:46,nombre:'Ají oriental 100ml',categoria:'Picantes',precio:4.00,imagen:'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=400&fit=crop'},
+            {id:47,nombre:'Achiote en polvo',categoria:'Condimentos',precio:0.80,imagen:'https://images.unsplash.com/photo-1596040033229-a0b538b61d65?w=400&h=400&fit=crop'},
+            {id:48,nombre:'Achiote La favorita 200ml',categoria:'Condimentos',precio:8.00,imagen:'https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400&h=400&fit=crop'},
+            {id:49,nombre:'Aderezo La sazón 200gr',categoria:'Condimentos',precio:5.00,imagen:'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&h=400&fit=crop'},
+            {id:50,nombre:'Salsa China Oriental 100ml',categoria:'Condimentos',precio:4.00,imagen:'https://images.unsplash.com/photo-1625772452888-7e8c0279d346?w=400&h=400&fit=crop'},
+            {id:51,nombre:'Aliño ile 215gr',categoria:'Condimentos',precio:4.00,imagen:'https://images.unsplash.com/photo-1599785209796-786432b228bc?w=400&h=400&fit=crop'},
+            {id:52,nombre:'La sazón 500gr',categoria:'Condimentos',precio:12.00,imagen:'https://images.unsplash.com/photo-1505575967455-4d0d1c711800?w=400&h=400&fit=crop'},
+            {id:53,nombre:'Sazón completa condimensa 200gr',categoria:'Condimentos',precio:3.50,imagen:'https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400&h=400&fit=crop'},
+            {id:54,nombre:'Mayonesa Los Andes casera 200g',categoria:'Condimentos',precio:5.00,imagen:'https://images.unsplash.com/photo-1471967183320-ee018f6e114a?w=400&h=400&fit=crop'},
+            {id:55,nombre:'Mayonesa Los Andes Albahaca',categoria:'Condimentos',precio:5.00,imagen:'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&h=400&fit=crop'},
+            {id:56,nombre:'Salsa de Tomate Los Andes',categoria:'Condimentos',precio:5.00,imagen:'https://images.unsplash.com/photo-1568158879083-c42860933ed7?w=400&h=400&fit=crop'},
+            {id:57,nombre:'Mayonesa AlaCena 200cm3',categoria:'Condimentos',precio:3.50,imagen:'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400&h=400&fit=crop'},
+            {id:58,nombre:'Salsa de tomate Maggi 200g',categoria:'Condimentos',precio:4.00,imagen:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400&h=400&fit=crop'},
+            {id:59,nombre:'Fideo rapidito de pollo 100g',categoria:'Tallarines',precio:3.50,imagen:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop'},
+            {id:60,nombre:'Fideo rapidito camarón 100g',categoria:'Tallarines',precio:3.50,imagen:'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&h=400&fit=crop'},
+            {id:61,nombre:'Fideo rapidito de carne 100g',categoria:'Tallarines',precio:3.50,imagen:'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=400&fit=crop'},
+            {id:62,nombre:'Fideo rapidito ramen carne picante 100g',categoria:'Tallarines',precio:3.50,imagen:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop'}
+        ];
+
+        let carrito = [];
+        let categoriaActiva = 'Todos';
+
+        function init() {
+            renderCategorias();
+            filtrarProductos();
+        }
+
+        function renderCategorias() {
+            const cats = ['Todos', ...new Set(productos.map(p => p.categoria))];
+            const html = cats.map(cat => `
+                <button onclick="cambiarCategoria('${cat}')" 
+                    class="px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${categoriaActiva === cat ? 'bg-blue-500 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100'}">
+                    ${cat}
+                </button>
+            `).join('');
+            document.getElementById('categorias').innerHTML = html;
+        }
+
+        function cambiarCategoria(cat) {
+            categoriaActiva = cat;
+            renderCategorias();
+            filtrarProductos();
+        }
+
+        function filtrarProductos() {
+            const busqueda = document.getElementById('busqueda').value.toLowerCase();
+            const filtrados = productos.filter(p => {
+                const matchCat = categoriaActiva === 'Todos' || p.categoria === categoriaActiva;
+                const matchBusq = p.nombre.toLowerCase().includes(busqueda);
+                return matchCat && matchBusq;
+            });
+
+            document.getElementById('contador').textContent = 
+                `${filtrados.length} producto${filtrados.length !== 1 ? 's' : ''} encontrado${filtrados.length !== 1 ? 's' : ''}`;
+
+            const html = filtrados.map(p => `
+                <div class="producto-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden">
+                    <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <span class="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">${p.categoria}</span>
+                        <h3 class="font-bold text-lg mt-2 mb-2 text-gray-800">${p.nombre}</h3>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-green-600">$${p.precio.toFixed(2)}</span>
+                            <button onclick="agregarAlCarrito(${p.id})" 
+                                class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-md">
+                                ➕ Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('productos-grid').innerHTML = html || '<p class="col-span-full text-center text-gray-500 py-12">No se encontraron productos</p>';
+        }
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            const existe = carrito.find(i => i.id === id);
+            
+            if (existe) {
+                existe.cantidad++;
+            } else {
+                carrito.push({...producto, cantidad: 1});
+            }
+            
+            actualizarCarrito();
+        }
+
+        function cambiarCantidad(id, cambio) {
+            const item = carrito.find(i => i.id === id);
+            if (item) {
+                item.cantidad += cambio;
+                if (item.cantidad <= 0) {
+                    carrito = carrito.filter(i => i.id !== id);
+                }
+            }
+            actualizarCarrito();
+        }
+
+        function eliminarDelCarrito(id) {
+            carrito = carrito.filter(i => i.id !== id);
+            actualizarCarrito();
+        }
+
+        function vaciarCarrito() {
+            if (confirm('¿Seguro que quieres vaciar el carrito?')) {
+                carrito = [];
+                actualizarCarrito();
+            }
+        }
+
+        function actualizarCarrito() {
+            const totalItems = carrito.reduce((sum, i) => sum + i.cantidad, 0);
+            const totalPrecio = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+
+            const badge = document.getElementById('badge-carrito');
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const contenido = document.getElementById('carrito-contenido');
+            if (carrito.length === 0) {
+                contenido.innerHTML = '<div class="text-center py-12"><p class="text-gray-500 text-lg">🛒 Tu carrito está vacío</p></div>';
+                document.getElementById('carrito-footer').classList.add('hidden');
+            } else {
+                contenido.innerHTML = carrito.map(item => `
+                    <div class="flex gap-4 bg-gray-50 p-4 rounded-lg mb-4">
+                        <img src="${item.imagen}" alt="${item.nombre}" class="w-20 h-20 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">${item.nombre}</h3>
+                            <p class="text-sm text-gray-600">${item.categoria}</p>
+                            <p class="text-lg font-bold text-green-600 mt-1">$${item.precio.toFixed(2)}</p>
+                        </div>
+                        <div class="flex flex-col items-end justify-between">
+                            <button onclick="eliminarDelCarrito(${item.id})" class="text-red-500 hover:text-red-700 text-xl">🗑️</button>
+                            <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm">
+                                <button onclick="cambiarCantidad(${item.id}, -1)" class="px-3 py-1 hover:bg-gray-100 rounded-l-lg">➖</button>
+                                <span class="font-semibold min-w-[2rem] text-center">${item.cantidad}</span>
+                                <button onclick="cambiarCantidad(${item.id}, 1)" class="px-3 py-1 hover:bg-gray-100 rounded-r-lg">➕</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('total-items').textContent = totalItems;
+                document.getElementById('total-precio').textContent = '$' + totalPrecio.toFixed(2);
+                document.getElementById('carrito-footer').classList.remove('hidden');
+            }
+        }
+
+        function toggleCarrito() {
+            const modal = document.getElementById('modal-carrito');
+            modal.classList.toggle('hidden');
+        }
+
+        function enviarWhatsApp() {
+            let mensaje = '🛒 *PEDIDO - La Tienda de Destino Argentina EC* 🇪🇨%0A%0A';
+            
+            carrito.forEach(item => {
+                mensaje += `• ${item.nombre}%0A`;
+                mensaje += `  Cantidad: ${item.cantidad}%0A`;
+                mensaje += `  Precio unit: $${item.precio.toFixed(2)}%0A`;
+                mensaje += `  Subtotal: $${(item.precio * item.cantidad).toFixed(2)}%0A%0A`;
+            });
+            
+            const total = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+            mensaje += `----------------------------%0A`;
+            mensaje += `*TOTAL: $${total.toFixed(2)}*%0A%0A`;
+            mensaje += `Por favor confirme mi pedido. ¡Gracias!`;
+            
+            window.open(`https://wa.me/593992130464?text=${mensaje}`, '_blank');
+        }
+
+        // Inicializar
+        init();
+    </script>
+</body>
+</html>

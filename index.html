@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🇪🇨 La Tienda de Destino Argentina EC</title>
+    <title>🇪🇨✈️🇦🇷 Destino Argentina EC - Productos Ecuatorianos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, -apple-system, sans-serif; }
         .producto-card { transition: all 0.3s ease; }
         .producto-card:hover { transform: translateY(-4px); }
+        .gradient-ec { background: linear-gradient(135deg, #FFD700 0%, #0033A0 50%, #CE1126 100%); }
+        .gradient-ar { background: linear-gradient(135deg, #74ACDF 0%, #FFFFFF 50%, #74ACDF 100%); }
     </style>
 </head>
-<body class="bg-gradient-to-br from-yellow-50 via-blue-50 to-red-50 min-h-screen">
+<body class="bg-blue-50 min-h-screen">
     
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-yellow-400 via-blue-500 to-red-500 text-white shadow-lg sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold">🇪🇨 La Tienda de Destino Argentina EC</h1>
-                    <p class="text-sm opacity-90">Productos auténticos de Ecuador</p>
+    <!-- Header con diseño Ecuador-Argentina -->
+    <header class="gradient-ec text-white shadow-2xl sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="text-4xl">🇪🇨</div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">✈️ Destino Argentina EC</h1>
+                        <p class="text-sm opacity-90">Productos Ecuatorianos | Envíos a Buenos Aires y La Plata</p>
+                    </div>
+                    <div class="text-4xl">🇦🇷</div>
                 </div>
-                <button onclick="toggleCarrito()" class="relative bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all shadow-md">
+                <button onclick="toggleCarrito()" class="relative bg-white text-blue-700 px-5 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-lg">
                     🛒 Carrito
-                    <span id="badge-carrito" class="hidden absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"></span>
+                    <span id="badge-carrito" class="hidden absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold animate-pulse"></span>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Banner informativo -->
+    <div class="bg-yellow-400 text-blue-900 py-3 text-center font-bold shadow-md">
+        📦 Próximas salidas: FEBRERO 2026 y MARZO 2026 | 📱 WhatsApp: (+593) 99 213 0464
+    </div>
 
     <div class="container mx-auto px-4 py-6">
         <!-- Búsqueda -->
@@ -37,9 +48,9 @@
                 <input 
                     type="text" 
                     id="busqueda" 
-                    placeholder="🔍 Buscar productos..." 
+                    placeholder="🔍 Buscar productos ecuatorianos..." 
                     oninput="filtrarProductos()"
-                    class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                    class="w-full pl-12 pr-4 py-4 border-3 border-blue-300 rounded-xl focus:border-yellow-500 focus:outline-none text-lg shadow-md"
                 />
             </div>
 
@@ -48,40 +59,89 @@
         </div>
 
         <!-- Contador -->
-        <div id="contador" class="mb-4 text-gray-600 font-medium"></div>
+        <div id="contador" class="mb-4 text-blue-800 font-bold text-lg"></div>
 
         <!-- Grid de productos -->
         <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
     </div>
 
     <!-- Modal del Carrito -->
-    <div id="modal-carrito" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 flex items-center justify-between">
-                <h2 class="text-2xl font-bold">🛒 Mi Carrito</h2>
-                <button onclick="toggleCarrito()" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all">
+    <div id="modal-carrito" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end sm:items-center justify-center p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="gradient-ec text-white p-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🛒</span>
+                    <h2 class="text-2xl font-bold">Mi Pedido</h2>
+                </div>
+                <button onclick="toggleCarrito()" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all text-2xl w-10 h-10 flex items-center justify-center">
                     ✕
                 </button>
             </div>
 
             <div id="carrito-contenido" class="flex-1 overflow-y-auto p-6"></div>
 
-            <div id="carrito-footer" class="hidden border-t bg-gray-50 p-6 space-y-4">
-                <div class="flex justify-between items-center text-lg">
-                    <span class="font-semibold">Subtotal (<span id="total-items">0</span> items):</span>
-                    <span id="total-precio" class="text-2xl font-bold text-green-600">$0.00</span>
+            <div id="carrito-footer" class="hidden border-t-4 border-blue-300 bg-gray-50 p-6 space-y-4">
+                <!-- Formulario de datos del cliente -->
+                <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                    <h3 class="font-bold text-blue-900 mb-3 text-lg">📝 Datos para el envío:</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-blue-800 mb-1">Nombre completo *</label>
+                            <input type="text" id="cliente-nombre" placeholder="Ej: Juan Pérez" 
+                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:border-yellow-500 focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-semibold text-blue-800 mb-1">Teléfono *</label>
+                                <input type="tel" id="cliente-telefono" placeholder="Ej: 099 123 4567" 
+                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:border-yellow-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-blue-800 mb-1">Ciudad *</label>
+                                <select id="cliente-ciudad" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:border-yellow-500 focus:outline-none">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Buenos Aires">Buenos Aires</option>
+                                    <option value="La Plata">La Plata</option>
+                                    <option value="Otra">Otra ciudad</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Total -->
+                <div class="flex justify-between items-center text-xl bg-yellow-100 p-4 rounded-xl border-2 border-yellow-400">
+                    <span class="font-bold text-blue-900">Total (<span id="total-items">0</span> items):</span>
+                    <span id="total-precio" class="text-3xl font-bold text-green-600"></span>
+                </div>
+
+                <!-- Botones -->
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="vaciarCarrito()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all">
-                        Vaciar Carrito
+                    <button onclick="vaciarCarrito()" class="bg-gray-300 text-gray-800 px-6 py-4 rounded-xl font-bold hover:bg-gray-400 transition-all">
+                        🗑️ Vaciar
                     </button>
-                    <button onclick="enviarWhatsApp()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-md flex items-center justify-center gap-2">
+                    <button onclick="enviarWhatsApp()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
                         📱 Enviar Pedido
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="gradient-ar text-blue-900 py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <p class="font-bold text-xl mb-2">📧 Contáctanos</p>
+                <p class="mb-1">📱 WhatsApp: (+593) 99 213 0464</p>
+                <p>✉️ Email: destino.argentina.ec@gmail.com</p>
+            </div>
+            <div class="text-sm">
+                <p class="font-semibold">🇪🇨 ✈️ 🇦🇷 Llevamos Ecuador a Argentina</p>
+                <p class="mt-2 opacity-80">© 2026 Destino Argentina EC - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const productos = [
@@ -161,7 +221,7 @@
             const cats = ['Todos', ...new Set(productos.map(p => p.categoria))];
             const html = cats.map(cat => `
                 <button onclick="cambiarCategoria('${cat}')" 
-                    class="px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${categoriaActiva === cat ? 'bg-blue-500 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100'}">
+                    class="px-5 py-3 rounded-xl font-bold whitespace-nowrap transition-all shadow-md ${categoriaActiva === cat ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900' : 'bg-white text-blue-700 hover:bg-blue-50'}">
                     ${cat}
                 </button>
             `).join('');
@@ -183,18 +243,18 @@
             });
 
             document.getElementById('contador').textContent = 
-                `${filtrados.length} producto${filtrados.length !== 1 ? 's' : ''} encontrado${filtrados.length !== 1 ? 's' : ''}`;
+                `🇪🇨 ${filtrados.length} producto${filtrados.length !== 1 ? 's' : ''} ecuatoriano${filtrados.length !== 1 ? 's' : ''} disponible${filtrados.length !== 1 ? 's' : ''}`;
 
             const html = filtrados.map(p => `
-                <div class="producto-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden">
+                <div class="producto-card bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border-2 border-blue-200">
                     <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-48 object-cover">
                     <div class="p-4">
-                        <span class="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">${p.categoria}</span>
-                        <h3 class="font-bold text-lg mt-2 mb-2 text-gray-800">${p.nombre}</h3>
+                        <span class="text-xs font-bold text-white bg-blue-600 px-3 py-1 rounded-full">${p.categoria}</span>
+                        <h3 class="font-bold text-lg mt-2 mb-2 text-blue-900">${p.nombre}</h3>
                         <div class="flex items-center justify-between">
                             <span class="text-2xl font-bold text-green-600">$${p.precio.toFixed(2)}</span>
                             <button onclick="agregarAlCarrito(${p.id})" 
-                                class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-md">
+                                class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 px-4 py-2 rounded-xl font-bold hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-md">
                                 ➕ Agregar
                             </button>
                         </div>
@@ -202,7 +262,7 @@
                 </div>
             `).join('');
 
-            document.getElementById('productos-grid').innerHTML = html || '<p class="col-span-full text-center text-gray-500 py-12">No se encontraron productos</p>';
+            document.getElementById('productos-grid').innerHTML = html || '<p class="col-span-full text-center text-gray-500 py-12 text-xl">😔 No se encontraron productos</p>';
         }
 
         function agregarAlCarrito(id) {
@@ -255,30 +315,30 @@
 
             const contenido = document.getElementById('carrito-contenido');
             if (carrito.length === 0) {
-                contenido.innerHTML = '<div class="text-center py-12"><p class="text-gray-500 text-lg">🛒 Tu carrito está vacío</p></div>';
+                contenido.innerHTML = '<div class="text-center py-12"><div class="text-6xl mb-4">🛒</div><p class="text-gray-500 text-xl font-semibold">Tu carrito está vacío</p><p class="text-gray-400 mt-2">¡Agrega productos ecuatorianos!</p></div>';
                 document.getElementById('carrito-footer').classList.add('hidden');
             } else {
                 contenido.innerHTML = carrito.map(item => `
-                    <div class="flex gap-4 bg-gray-50 p-4 rounded-lg mb-4">
-                        <img src="${item.imagen}" alt="${item.nombre}" class="w-20 h-20 object-cover rounded-lg">
+                    <div class="flex gap-4 bg-gradient-to-r from-blue-50 to-yellow-50 p-4 rounded-xl mb-4 border-2 border-blue-200 shadow-md">
+                        <img src="${item.imagen}" alt="${item.nombre}" class="w-24 h-24 object-cover rounded-xl border-2 border-white shadow-md">
                         <div class="flex-1">
-                            <h3 class="font-semibold text-gray-800">${item.nombre}</h3>
-                            <p class="text-sm text-gray-600">${item.categoria}</p>
-                            <p class="text-lg font-bold text-green-600 mt-1">$${item.precio.toFixed(2)}</p>
+                            <h3 class="font-bold text-blue-900 text-lg">${item.nombre}</h3>
+                            <p class="text-sm text-blue-600 font-semibold">${item.categoria}</p>
+                            <p class="text-xl font-bold text-green-600 mt-2">${item.precio.toFixed(2)}</p>
                         </div>
                         <div class="flex flex-col items-end justify-between">
-                            <button onclick="eliminarDelCarrito(${item.id})" class="text-red-500 hover:text-red-700 text-xl">🗑️</button>
-                            <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm">
-                                <button onclick="cambiarCantidad(${item.id}, -1)" class="px-3 py-1 hover:bg-gray-100 rounded-l-lg">➖</button>
-                                <span class="font-semibold min-w-[2rem] text-center">${item.cantidad}</span>
-                                <button onclick="cambiarCantidad(${item.id}, 1)" class="px-3 py-1 hover:bg-gray-100 rounded-r-lg">➕</button>
+                            <button onclick="eliminarDelCarrito(${item.id})" class="text-red-600 hover:text-red-800 font-bold text-2xl">🗑️</button>
+                            <div class="flex items-center gap-2 bg-white rounded-xl shadow-md border-2 border-blue-300">
+                                <button onclick="cambiarCantidad(${item.id}, -1)" class="px-3 py-2 hover:bg-blue-50 rounded-l-xl font-bold text-xl">➖</button>
+                                <span class="font-bold min-w-[3rem] text-center text-xl text-blue-900">${item.cantidad}</span>
+                                <button onclick="cambiarCantidad(${item.id}, 1)" class="px-3 py-2 hover:bg-blue-50 rounded-r-xl font-bold text-xl">➕</button>
                             </div>
                         </div>
                     </div>
                 `).join('');
 
                 document.getElementById('total-items').textContent = totalItems;
-                document.getElementById('total-precio').textContent = '$' + totalPrecio.toFixed(2);
+                document.getElementById('total-precio').textContent = ' + totalPrecio.toFixed(2);
                 document.getElementById('carrito-footer').classList.remove('hidden');
             }
         }
@@ -289,21 +349,70 @@
         }
 
         function enviarWhatsApp() {
-            let mensaje = '🛒 *PEDIDO - La Tienda de Destino Argentina EC* 🇪🇨%0A%0A';
+            const nombre = document.getElementById('cliente-nombre').value.trim();
+            const telefono = document.getElementById('cliente-telefono').value.trim();
+            const ciudad = document.getElementById('cliente-ciudad').value;
+
+            // Validar campos
+            if (!nombre) {
+                alert('⚠️ Por favor ingresa tu nombre completo');
+                document.getElementById('cliente-nombre').focus();
+                return;
+            }
+            if (!telefono) {
+                alert('⚠️ Por favor ingresa tu teléfono');
+                document.getElementById('cliente-telefono').focus();
+                return;
+            }
+            if (!ciudad) {
+                alert('⚠️ Por favor selecciona tu ciudad de destino');
+                document.getElementById('cliente-ciudad').focus();
+                return;
+            }
+
+            // Crear mensaje de WhatsApp
+            let mensaje = '🇪🇨✈️🇦🇷 *NUEVO PEDIDO - DESTINO ARGENTINA EC*%0A';
+            mensaje += '━━━━━━━━━━━━━━━━━━━━━━━%0A%0A';
             
-            carrito.forEach(item => {
-                mensaje += `• ${item.nombre}%0A`;
-                mensaje += `  Cantidad: ${item.cantidad}%0A`;
-                mensaje += `  Precio unit: $${item.precio.toFixed(2)}%0A`;
-                mensaje += `  Subtotal: $${(item.precio * item.cantidad).toFixed(2)}%0A%0A`;
+            // Datos del cliente
+            mensaje += '👤 *DATOS DEL CLIENTE:*%0A';
+            mensaje += `📝 Nombre: ${nombre}%0A`;
+            mensaje += `📱 Teléfono: ${telefono}%0A`;
+            mensaje += `📍 Ciudad destino: ${ciudad}%0A%0A`;
+            
+            mensaje += '━━━━━━━━━━━━━━━━━━━━━━━%0A';
+            mensaje += '🛒 *PRODUCTOS:*%0A%0A';
+            
+            // Productos
+            carrito.forEach((item, index) => {
+                mensaje += `${index + 1}. *${item.nombre}*%0A`;
+                mensaje += `   • Cantidad: ${item.cantidad}%0A`;
+                mensaje += `   • Precio unit: ${item.precio.toFixed(2)}%0A`;
+                mensaje += `   • Subtotal: ${(item.precio * item.cantidad).toFixed(2)}%0A%0A`;
             });
             
+            // Total
             const total = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
-            mensaje += `----------------------------%0A`;
-            mensaje += `*TOTAL: $${total.toFixed(2)}*%0A%0A`;
-            mensaje += `Por favor confirme mi pedido. ¡Gracias!`;
+            mensaje += '━━━━━━━━━━━━━━━━━━━━━━━%0A';
+            mensaje += `💰 *TOTAL: ${total.toFixed(2)}*%0A`;
+            mensaje += '━━━━━━━━━━━━━━━━━━━━━━━%0A%0A';
+            mensaje += '📦 Próximas salidas: FEB 2026 y MAR 2026%0A';
+            mensaje += '🇪🇨 Quito → 🇦🇷 Buenos Aires / La Plata';
             
+            // Abrir WhatsApp
             window.open(`https://wa.me/593992130464?text=${mensaje}`, '_blank');
+            
+            // Opcional: Limpiar formulario y carrito después de enviar
+            setTimeout(() => {
+                if (confirm('✅ ¡Pedido enviado! ¿Deseas vaciar el carrito?')) {
+                    carrito = [];
+                    document.getElementById('cliente-nombre').value = '';
+                    document.getElementById('cliente-telefono').value = '';
+                    document.getElementById('cliente-ciudad').value = '';
+                    actualizarCarrito();
+                    toggleCarrito();
+                }
+            }, 1000);
         }
 
         // Inicializar

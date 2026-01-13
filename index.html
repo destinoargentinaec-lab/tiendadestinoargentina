@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destino Argentina EC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50">
+    
+    <header style="background: linear-gradient(135deg, #FFD700 0%, #0033A0 50%, #CE1126 100%);" class="text-white shadow-2xl sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">🇪🇨</span>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">Destino Argentina EC</h1>
+                        <p class="text-sm">Productos Ecuatorianos</p>
+                    </div>
+                    <span class="text-4xl">🇦🇷</span>
+                </div>
+                <button onclick="toggleCarrito()" class="relative bg-white text-blue-700 px-5 py-3 rounded-xl font-bold shadow-lg">
+                    Carrito
+                    <span id="badgeCarrito" class="hidden absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-7 h-7 text-sm font-bold"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-yellow-400 text-blue-900 py-3 text-center font-bold">
+        Proximas salidas: FEBRERO 2026 y MARZO 2026
+    </div>
+
+    <div class="container mx-auto px-4 py-6">
+        <input type="text" id="busqueda" placeholder="Buscar productos..." oninput="filtrarProductos()" class="w-full px-4 py-4 border-2 border-blue-300 rounded-xl mb-4"/>
+        <div id="categorias" class="flex gap-2 overflow-x-auto pb-2 mb-4"></div>
+        <div id="contador" class="mb-4 text-blue-800 font-bold"></div>
+        <div id="productosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </div>
+
+    <div id="modalCarrito" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col">
+            <div style="background: linear-gradient(135deg, #FFD700 0%, #0033A0 50%, #CE1126 100%);" class="text-white p-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Mi Pedido</h2>
+                <button onclick="toggleCarrito()" class="bg-white bg-opacity-20 rounded-full p-2 text-2xl w-10 h-10">X</button>
+            </div>
+            <div id="carritoContenido" class="flex-1 overflow-y-auto p-6"></div>
+            <div id="carritoFooter" class="hidden border-t-4 border-blue-300 bg-gray-50 p-6 space-y-4">
+                <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                    <h3 class="font-bold text-blue-900 mb-3">Datos para el envio:</h3>
+                    <input type="text" id="clienteNombre" placeholder="Nombre completo" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg mb-3"/>
+                    <input type="tel" id="clienteTelefono" placeholder="Telefono" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg mb-3"/>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-blue-800 mb-1">Ciudad de origen (Ecuador)</label>
+                            <select id="ciudadOrigen" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg">
+                                <option value="">Seleccionar...</option>
+                                <option value="Alfredo Baquerizo Moreno">Alfredo Baquerizo Moreno</option>
+                                <option value="Ambato">Ambato</option>
+                                <option value="Archidona">Archidona</option>
+                                <option value="Atacames">Atacames</option>
+                                <option value="Atuntaqui">Atuntaqui</option>
+                                <option value="Azogues">Azogues</option>
+                                <option value="Babahoyo">Babahoyo</option>
+                                <option value="Bahia de Caraquez">Bahia de Caraquez</option>
+                                <option value="Balao">Balao</option>
+                                <option value="Balsas">Balsas</option>
+                                <option value="Balzar">Balzar</option>
+                                <option value="Biblian">Biblian</option>
+                                <option value="Buena Fe">Buena Fe</option>
+                                <option value="Calceta">Calceta</option>
+                                <option value="Cariamanga">Cariamanga</option>
+                                <option value="Catamayo">Catamayo</option>
+                                <option value="Catarama">Catarama</option>
+                                <option value="Cayambe">Cayambe</option>
+                                <option value="Celica">Celica</option>
+                                <option value="Chone">Chone</option>
+                                <option value="Coca">Coca</option>
+                                <option value="Colimes">Colimes</option>
+                                <option value="Cotacachi">Cotacachi</option>
+                                <option value="Cuenca">Cuenca</option>
+                                <option value="Daule">Daule</option>
+                                <option value="Duran">Duran</option>
+                                <option value="El Carmen">El Carmen</option>
+                                <option value="El Guabo">El Guabo</option>
+                                <option value="El Triunfo">El Triunfo</option>
+                                <option value="Eloy Alfaro">Eloy Alfaro</option>
+                                <option value="Esmeraldas">Esmeraldas</option>
+                                <option value="Gualaceo">Gualaceo</option>
+                                <option value="Gualaquiza">Gualaquiza</option>
+                                <option value="Guaranda">Guaranda</option>
+                                <option value="Guayaquil">Guayaquil</option>
+                                <option value="Huaquillas">Huaquillas</option>
+                                <option value="Ibarra">Ibarra</option>
+                                <option value="Jipijapa">Jipijapa</option>
+                                <option value="La Concordia">La Concordia</option>
+                                <option value="La Libertad">La Libertad</option>
+                                <option value="La Mana">La Mana</option>
+                                <option value="La Troncal">La Troncal</option>
+                                <option value="Latacunga">Latacunga</option>
+                                <option value="Loja">Loja</option>
+                                <option value="Lomas de Sargentillo">Lomas de Sargentillo</option>
+                                <option value="Loreto">Loreto</option>
+                                <option value="Macara">Macara</option>
+                                <option value="Machachi">Machachi</option>
+                                <option value="Machala">Machala</option>
+                                <option value="Macas">Macas</option>
+                                <option value="Manta">Manta</option>
+                                <option value="Milagro">Milagro</option>
+                                <option value="Montalvo">Montalvo</option>
+                                <option value="Montecristi">Montecristi</option>
+                                <option value="Muisne">Muisne</option>
+                                <option value="Naranjal">Naranjal</option>
+                                <option value="Naranjito">Naranjito</option>
+                                <option value="Nueva Loja">Nueva Loja</option>
+                                <option value="Otavalo">Otavalo</option>
+                                <option value="Pallatanga">Pallatanga</option>
+                                <option value="Palestina">Palestina</option>
+                                <option value="Pasaje">Pasaje</option>
+                                <option value="Pedernales">Pedernales</option>
+                                <option value="Pedro Carbo">Pedro Carbo</option>
+                                <option value="Pelileo">Pelileo</option>
+                                <option value="Pichincha">Pichincha</option>
+                                <option value="Pinas">Pinas</option>
+                                <option value="Playas">Playas</option>
+                                <option value="Portovelo">Portovelo</option>
+                                <option value="Portoviejo">Portoviejo</option>
+                                <option value="Pujili">Pujili</option>
+                                <option value="Puyo">Puyo</option>
+                                <option value="Quevedo">Quevedo</option>
+                                <option value="Quito">Quito</option>
+                                <option value="Riobamba">Riobamba</option>
+                                <option value="Rocafuerte">Rocafuerte</option>
+                                <option value="Rosa Zarate">Rosa Zarate</option>
+                                <option value="Salinas">Salinas</option>
+                                <option value="Samborondon">Samborondon</option>
+                                <option value="San Gabriel">San Gabriel</option>
+                                <option value="San Lorenzo">San Lorenzo</option>
+                                <option value="San Miguel">San Miguel</option>
+                                <option value="Sangolqui">Sangolqui</option>
+                                <option value="Santa Elena">Santa Elena</option>
+                                <option value="Santa Lucia">Santa Lucia</option>
+                                <option value="Santa Rosa">Santa Rosa</option>
+                                <option value="Santo Domingo">Santo Domingo</option>
+                                <option value="Saquisili">Saquisili</option>
+                                <option value="Shushufindi">Shushufindi</option>
+                                <option value="Sucre">Sucre</option>
+                                <option value="Sucua">Sucua</option>
+                                <option value="Tabacundo">Tabacundo</option>
+                                <option value="Tena">Tena</option>
+                                <option value="Tulcan">Tulcan</option>
+                                <option value="Urcuqui">Urcuqui</option>
+                                <option value="Valencia">Valencia</option>
+                                <option value="Velasco Ibarra">Velasco Ibarra</option>
+                                <option value="Ventanas">Ventanas</option>
+                                <option value="Vinces">Vinces</option>
+                                <option value="Yaguachi">Yaguachi</option>
+                                <option value="Yantzaza">Yantzaza</option>
+                                <option value="Zamora">Zamora</option>
+                                <option value="Zaruma">Zaruma</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-blue-800 mb-1">Ciudad destino (Argentina)</label>
+                            <select id="ciudadDestino" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg">
+                                <option value="">Seleccionar...</option>
+                                <option value="Buenos Aires">Buenos Aires</option>
+                                <option value="La Plata">La Plata</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center bg-yellow-100 p-4 rounded-xl">
+                    <span class="font-bold">Total (<span id="totalItems">0</span> items):</span>
+                    <span id="totalPrecio" class="text-3xl font-bold text-green-600"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="vaciarCarrito()" class="bg-gray-300 px-6 py-4 rounded-xl font-bold">Vaciar</button>
+                    <button onclick="enviarWhatsApp()" class="bg-green-500 text-white px-6 py-4 rounded-xl font-bold">Enviar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var PRODUCTOS = [
+{id:1,n:"Manicho 28g",c:"Chocolates",p:2.00,i:"https://images.unsplash.com/photo-1606312619070-d48b4cda6257?w=400"},
+{id:2,n:"Chocolate Noggy",c:"Chocolates",p:10.00,i:"https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400"},
+{id:3,n:"Chocolate Galak 20g",c:"Chocolates",p:2.00,i:"https://images.unsplash.com/photo-1511381939415-e44015466834?w=400"},
+{id:4,n:"Tango chocolate negro",c:"Galletas",p:1.50,i:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
+{id:5,n:"Hanuta",c:"Galletas",p:2.00,i:"https://images.unsplash.com/photo-1568471173238-a7e0e2e66b58?w=400"},
+{id:6,n:"Galletas de Coco 30g",c:"Galletas",p:1.50,i:"https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400"},
+{id:7,n:"Galletas Amor chocolate 100g",c:"Galletas",p:4.50,i:"https://images.unsplash.com/photo-1548365328-8c6db3220e4c?w=400"},
+{id:8,n:"Paleta limon 7",c:"Golosinas",p:1.50,i:"https://images.unsplash.com/photo-1582221675623-fd2d000f5645?w=400"},
+{id:9,n:"Paletas acidos con sal",c:"Golosinas",p:0.30,i:"https://images.unsplash.com/photo-1581798459219-c0f6f8b8b8a7?w=400"},
+{id:10,n:"Chicles super acidos",c:"Golosinas",p:0.80,i:"https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400"},
+{id:11,n:"Quipitos pops 8g",c:"Golosinas",p:1.50,i:"https://images.unsplash.com/photo-1514517521153-1be72277b32f?w=400"},
+{id:12,n:"Pipas limon 20g",c:"Golosinas",p:1.80,i:"https://images.unsplash.com/photo-1608797178974-15b35a64ede9?w=400"},
+{id:13,n:"Cheese Tris 23g",c:"Snacks",p:2.00,i:"https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400"},
+{id:14,n:"Banchis natural 40g",c:"Snacks",p:3.00,i:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
+{id:15,n:"Banchis limon 40g",c:"Snacks",p:3.00,i:"https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400"},
+{id:16,n:"Banchis picante 40g",c:"Snacks",p:3.50,i:"https://images.unsplash.com/photo-1613919113640-0ae4b37b3a6c?w=400"},
+{id:17,n:"Tortolines picantes 45gr",c:"Snacks",p:3.00,i:"https://images.unsplash.com/photo-1625772452888-7e8c0279d346?w=400"},
+{id:18,n:"Tortolines madurito",c:"Snacks",p:3.00,i:"https://images.unsplash.com/photo-1587224621482-2a5f866ea1f4?w=400"},
+{id:19,n:"Platanitos natural 45g",c:"Snacks",p:2.00,i:"https://images.unsplash.com/photo-1610432026777-a3d2a9505b4b?w=400"},
+{id:20,n:"Banchis picante 150g",c:"Snacks",p:4.00,i:"https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400"},
+{id:21,n:"Cheese trees 47g",c:"Snacks",p:3.00,i:"https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400"},
+{id:22,n:"Habas natural 32g",c:"Snacks",p:1.50,i:"https://images.unsplash.com/photo-1599909533230-b1ca9c0ebc87?w=400"},
+{id:23,n:"Panchitos 18g",c:"Snacks",p:1.50,i:"https://images.unsplash.com/photo-1608797178974-15b35a64ede9?w=400"},
+{id:24,n:"Golpe ranchero 25g",c:"Snacks",p:1.00,i:"https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400"},
+{id:25,n:"Cafe Minerva 200g",c:"Bebidas",p:6.00,i:"https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400"},
+{id:26,n:"Te caliente legz 500gr",c:"Bebidas",p:5.00,i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=400"},
+{id:27,n:"Jugos Ya sabor mora",c:"Bebidas",p:0.90,i:"https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400"},
+{id:28,n:"Fioravanti Manzana 300ml",c:"Bebidas",p:5.00,i:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400"},
+{id:29,n:"Fioravanti Fresa 250ml",c:"Bebidas",p:5.00,i:"https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400"},
+{id:30,n:"Chocolisto",c:"Bebidas",p:0.70,i:"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=400"},
+{id:31,n:"Pony malta 200ml",c:"Bebidas",p:5.00,i:"https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400"},
+{id:32,n:"Avena quaker maracuya 300g",c:"Bebidas",p:6.00,i:"https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=400"},
+{id:33,n:"Cafe Minerva 100g",c:"Bebidas",p:4.50,i:"https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=400"},
+{id:34,n:"Juan valdez 100gr",c:"Bebidas",p:2.00,i:"https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400"},
+{id:35,n:"Cafe Velez Loja",c:"Bebidas",p:25.00,i:"https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400"},
+{id:36,n:"Panelada de Maracuya",c:"Bebidas",p:1.50,i:"https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400"},
+{id:37,n:"Leche la vaquita 190g",c:"Lacteos",p:5.00,i:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:38,n:"Tapiokita mora 200g",c:"Lacteos",p:5.00,i:"https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400"},
+{id:39,n:"Yogurt Toni mora 190gr",c:"Lacteos",p:2.50,i:"https://images.unsplash.com/photo-1571212515218-8e6796a6f0a0?w=400"},
+{id:40,n:"Tapiokita fresa 200gr",c:"Lacteos",p:5.00,i:"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400"},
+{id:41,n:"Leche la vaquita 90g",c:"Lacteos",p:3.00,i:"https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=400"},
+{id:42,n:"Tapiokita cereza 200g",c:"Lacteos",p:5.00,i:"https://images.unsplash.com/photo-1587049352846-4a222e784420?w=400"},
+{id:43,n:"Leche la vaquita 400g",c:"Lacteos",p:13.50,i:"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400"},
+{id:44,n:"Mermelada mora 250g",c:"Mermeladas",p:5.00,i:"https://images.unsplash.com/photo-1599785209796-786432b228bc?w=400"},
+{id:45,n:"Mermelada pina 250g",c:"Mermeladas",p:5.00,i:"https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400"},
+{id:46,n:"Aji oriental 100ml",c:"Picantes",p:4.00,i:"https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400"},
+{id:47,n:"Achiote en polvo",c:"Condimentos",p:0.80,i:"https://images.unsplash.com/photo-1596040033229-a0b538b61d65?w=400"},
+{id:48,n:"Achiote La favorita 200ml",c:"Condimentos",p:8.00,i:"https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400"},
+{id:49,n:"Aderezo La sazon 200gr",c:"Condimentos",p:5.00,i:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400"},
+{id:50,n:"Salsa China Oriental 100ml",c:"Condimentos",p:4.00,i:"https://images.unsplash.com/photo-1625772452888-7e8c0279d346?w=400"},
+{id:51,n:"Alino ile 215gr",c:"Condimentos",p:4.00,i:"https://images.unsplash.com/photo-1599785209796-786432b228bc?w=400"},
+{id:52,n:"La sazon 500gr",c:"Condimentos",p:12.00,i:"https://images.unsplash.com/photo-1505575967455-4d0d1c711800?w=400"},
+{id:53,n:"Sazon condimensa 200gr",c:"Condimentos",p:3.50,i:"https://images.unsplash.com/photo-1599909533730-7f96ee1b321e?w=400"},
+{id:54,n:"Mayonesa Los Andes 200g",c:"Condimentos",p:5.00,i:"https://images.unsplash.com/photo-1471967183320-ee018f6e114a?w=400"},
+{id:55,n:"Mayonesa Albahaca",c:"Condimentos",p:5.00,i:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400"},
+{id:56,n:"Salsa Tomate Los Andes",c:"Condimentos",p:5.00,i:"https://images.unsplash.com/photo-1568158879083-c42860933ed7?w=400"},
+{id:57,n:"Mayonesa AlaCena 200cm3",c:"Condimentos",p:3.50,i:"https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400"},
+{id:58,n:"Salsa tomate Maggi 200g",c:"Condimentos",p:4.00,i:"https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400"},
+{id:59,n:"Fideo rapidito pollo 100g",c:"Tallarines",p:3.50,i:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400"},
+{id:60,n:"Fideo rapidito camaron 100g",c:"Tallarines",p:3.50,i:"https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400"},
+{id:61,n:"Fideo rapidito carne 100g",c:"Tallarines",p:3.50,i:"https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400"},
+{id:62,n:"Fideo ramen picante 100g",c:"Tallarines",p:3.50,i:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400"}
+];
+
+var carrito = [];
+var categoriaActiva = "Todos";
+
+function init() {
+    renderCategorias();
+    filtrarProductos();
+}
+
+function renderCategorias() {
+    var cats = ["Todos"];
+    for (var i = 0; i < PRODUCTOS.length; i++) {
+        if (cats.indexOf(PRODUCTOS[i].c) === -1) {
+            cats.push(PRODUCTOS[i].c);
+        }
+    }
+    
+    var html = "";
+    for (var j = 0; j < cats.length; j++) {
+        var activo = categoriaActiva === cats[j] ? "bg-yellow-400 text-blue-900" : "bg-white text-blue-700";
+        html += '<button onclick="cambiarCategoria(\'' + cats[j] + '\')" class="px-5 py-3 rounded-xl font-bold ' + activo + '">' + cats[j] + '</button>';
+    }
+    document.getElementById("categorias").innerHTML = html;
+}
+
+function cambiarCategoria(cat) {
+    categoriaActiva = cat;
+    renderCategorias();
+    filtrarProductos();
+}
+
+function filtrarProductos() {
+    var busqueda = document.getElementById("busqueda").value.toLowerCase();
+    var filtrados = [];
+    
+    for (var i = 0; i < PRODUCTOS.length; i++) {
+        var p = PRODUCTOS[i];
+        var matchCat = categoriaActiva === "Todos" || p.c === categoriaActiva;
+        var matchBusq = p.n.toLowerCase().indexOf(busqueda) > -1;
+        if (matchCat && matchBusq) {
+            filtrados.push(p);
+        }
+    }
+
+    document.getElementById("contador").textContent = filtrados.length + " productos disponibles";
+
+    var html = "";
+    for (var j = 0; j < filtrados.length; j++) {
+        var prod = filtrados[j];
+        html += '<div class="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-blue-200">';
+        html += '<img src="' + prod.i + '" class="w-full h-48 object-cover">';
+        html += '<div class="p-4">';
+        html += '<span class="text-xs font-bold text-white bg-blue-600 px-3 py-1 rounded-full">' + prod.c + '</span>';
+        html += '<h3 class="font-bold text-lg mt-2 mb-2">' + prod.n + '</h3>';
+        html += '<div class="flex items-center justify-between">';
+        html += '<span class="text-2xl font-bold text-green-600">$' + prod.p.toFixed(2) + '</span>';
+        html += '<button onclick="agregarAlCarrito(' + prod.id + ')" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-xl font-bold">Agregar</button>';
+        html += '</div></div></div>';
+    }
+
+    document.getElementById("productosGrid").innerHTML = html;
+}
+
+function agregarAlCarrito(id) {
+    var producto = null;
+    for (var i = 0; i < PRODUCTOS.length; i++) {
+        if (PRODUCTOS[i].id === id) {
+            producto = PRODUCTOS[i];
+            break;
+        }
+    }
+    
+    var existe = null;
+    for (var j = 0; j < carrito.length; j++) {
+        if (carrito[j].id === id) {
+            existe = carrito[j];
+            break;
+        }
+    }
+    
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({id: producto.id, n: producto.n, c: producto.c, p: producto.p, i: producto.i, cantidad: 1});
+    }
+    
+    actualizarCarrito();
+}
+
+function cambiarCantidad(id, cambio) {
+    for (var i = 0; i < carrito.length; i++) {
+        if (carrito[i].id === id) {
+            carrito[i].cantidad += cambio;
+            if (carrito[i].cantidad <= 0) {
+                carrito.splice(i, 1);
+            }
+            break;
+        }
+    }
+    actualizarCarrito();
+}
+
+function eliminarDelCarrito(id) {
+    for (var i = 0; i < carrito.length; i++) {
+        if (carrito[i].id === id) {
+            carrito.splice(i, 1);
+            break;
+        }
+    }
+    actualizarCarrito();
+}
+
+function vaciarCarrito() {
+    if (confirm("Seguro que quieres vaciar el carrito?")) {
+        carrito = [];
+        actualizarCarrito();
+    }
+}
+
+function actualizarCarrito() {
+    var totalItems = 0;
+    var totalPrecio = 0;
+    for (var i = 0; i < carrito.length; i++) {
+        totalItems += carrito[i].cantidad;
+        totalPrecio += carrito[i].p * carrito[i].cantidad;
+    }
+
+    var badge = document.getElementById("badgeCarrito");
+    if (totalItems > 0) {
+        badge.textContent = totalItems;
+        badge.classList.remove("hidden");
+    } else {
+        badge.classList.add("hidden");
+    }
+
+    var contenido = document.getElementById("carritoContenido");
+    if (carrito.length === 0) {
+        contenido.innerHTML = '<div class="text-center py-12"><p class="text-xl">Tu carrito esta vacio</p></div>';
+        document.getElementById("carritoFooter").classList.add("hidden");
+    } else {
+        var html = "";
+        for (var j = 0; j < carrito.length; j++) {
+            var item = carrito[j];
+            html += '<div class="flex gap-4 bg-blue-50 p-4 rounded-xl mb-4">';
+            html += '<img src="' + item.i + '" class="w-24 h-24 object-cover rounded-xl">';
+            html += '<div class="flex-1">';
+            html += '<h3 class="font-bold">' + item.n + '</h3>';
+            html += '<p class="text-sm text-blue-600">' + item.c + '</p>';
+            html += '<p class="text-xl font-bold text-green-600">$' + item.p.toFixed(2) + '</p>';
+            html += '</div>';
+            html += '<div class="flex flex-col items-end justify-between">';
+            html += '<button onclick="eliminarDelCarrito(' + item.id + ')" class="text-red-600 text-2xl">X</button>';
+            html += '<div class="flex items-center gap-2 bg-white rounded-xl border-2">';
+            html += '<button onclick="cambiarCantidad(' + item.id + ', -1)" class="px-3 py-2 font-bold">-</button>';
+            html += '<span class="font-bold min-w-[3rem] text-center">' + item.cantidad + '</span>';
+            html += '<button onclick="cambiarCantidad(' + item.id + ', 1)" class="px-3 py-2 font-bold">+</button>';
+            html += '</div></div></div>';
+        }
+
+        contenido.innerHTML = html;
+        document.getElementById("totalItems").textContent = totalItems;
+        document.getElementById("totalPrecio").textContent = "$" + totalPrecio.toFixed(2);
+        document.getElementById("carritoFooter").classList.remove("hidden");
+    }
+}
+
+function toggleCarrito() {
+    var modal = document.getElementById("modalCarrito");
+    if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+    } else {
+        modal.classList.add("hidden");
+    }
+}
+
+function enviarWhatsApp() {
+    var nombre = document.getElementById("clienteNombre").value.trim();
+    var telefono = document.getElementById("clienteTelefono").value.trim();
+    var origen = document.getElementById("ciudadOrigen").value;
+    var destino = document.getElementById("ciudadDestino").value;
+
+    if (!nombre) {
+        alert("Por favor ingresa tu nombre");
+        return;
+    }
+    if (!telefono) {
+        alert("Por favor ingresa tu telefono");
+        return;
+    }
+    if (!origen) {
+        alert("Por favor selecciona tu ciudad de origen");
+        return;
+    }
+    if (!destino) {
+        alert("Por favor selecciona tu ciudad de destino");
+        return;
+    }
+
+    var mensaje = "NUEVO PEDIDO - DESTINO ARGENTINA EC%0A%0A";
+    mensaje += "DATOS:%0ANombre: " + nombre + "%0ATelefono: " + telefono + "%0ACiudad origen: " + origen + " (Ecuador)%0ACiudad destino: " + destino + " (Argentina)%0A%0A";
+    mensaje += "PRODUCTOS:%0A%0A";
+    
+    var total = 0;
+    for (var i = 0; i < carrito.length; i++) {
+        var item = carrito[i];
+        mensaje += (i + 1) + ". " + item.n + "%0A";
+        mensaje += "Cantidad: " + item.cantidad + "%0A";
+        mensaje += "Precio: $" + item.p.toFixed(2) + "%0A";
+        mensaje += "Subtotal: $" + (item.p * item.cantidad).toFixed(2) + "%0A%0A";
+        total += item.p * item.cantidad;
+    }
+    
+    mensaje += "TOTAL: $" + total.toFixed(2);
+    
+    window.open("https://wa.me/593992130464?text=" + mensaje, "_blank");
+    
+    setTimeout(function() {
+        if (confirm("Pedido enviado! Vaciar carrito?")) {
+            carrito = [];
+            document.getElementById("clienteNombre").value = "";
+            document.getElementById("clienteTelefono").value = "";
+            document.getElementById("ciudadOrigen").value = "";
+            document.getElementById("ciudadDestino").value = "";
+            actualizarCarrito();
+            toggleCarrito();
+        }
+    }, 1000);
+}
+
+init();
+    </script>
+</body>
+</html>
